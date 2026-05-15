@@ -522,7 +522,7 @@ export default function Index() {
                     text: "Можете перейти на сайт нейросети и убедиться сами — ссылки открытые, всё прозрачно.",
                   },
                   {
-                    icon: "HeartHandshake",
+                    icon: "Heart",
                     text: "Если нейросеть показала себя плохо — помогу. Обращайтесь, разберём вашу ситуацию вместе.",
                   },
                 ].map(({ icon, text }) => (
@@ -564,7 +564,7 @@ export default function Index() {
                   className="w-14 h-14 rounded-sm flex items-center justify-center shrink-0"
                   style={{ background: "hsl(var(--accent) / 0.1)" }}
                 >
-                  <Icon name="Microscope" size={24} style={{ color: "hsl(var(--accent))" }} />
+                  <Icon name="Search" size={24} style={{ color: "hsl(var(--accent))" }} />
                 </div>
                 <div>
                   <div className="font-body font-semibold text-sm">Реальные примеры</div>
