@@ -514,16 +514,16 @@ export default function Index() {
               <div className="space-y-5">
                 {[
                   {
-                    icon: "ShieldCheck",
-                    text: "Независимые тесты. Мы не аффилированы ни с одним из сравниваемых продуктов.",
+                    icon: "UserCheck",
+                    text: "Исследовано на 100% лично. Каждый результат проверен мной — никаких автоматических выводов.",
                   },
                   {
-                    icon: "RefreshCw",
-                    text: "Данные обновляются ежемесячно. Устаревшая информация помечается.",
+                    icon: "ExternalLink",
+                    text: "Можете перейти на сайт нейросети и убедиться сами — ссылки открытые, всё прозрачно.",
                   },
                   {
-                    icon: "Users",
-                    text: "Методология публична. Можете проверить сами или предложить новые критерии.",
+                    icon: "HeartHandshake",
+                    text: "Если нейросеть показала себя плохо — помогу. Обращайтесь, разберём вашу ситуацию вместе.",
                   },
                 ].map(({ icon, text }) => (
                   <div key={text} className="flex gap-4 items-start">
@@ -546,35 +546,42 @@ export default function Index() {
             </div>
 
             <div className="space-y-4">
-              {[
-                { label: "Точность данных", value: 97 },
-                { label: "Актуальность", value: 89 },
-                { label: "Покрытие параметров", value: 94 },
-              ].map(({ label, value }) => (
-                <div key={label}>
-                  <div className="flex justify-between font-body text-sm mb-2">
-                    <span>{label}</span>
-                    <span className="font-semibold">{value}%</span>
-                  </div>
-                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full"
-                      style={{
-                        width: `${value}%`,
-                        background: "hsl(var(--accent))",
-                      }}
-                    />
-                  </div>
+              <div className="p-6 border border-border rounded-sm bg-background flex items-center gap-5">
+                <div
+                  className="w-14 h-14 rounded-sm flex items-center justify-center shrink-0 text-2xl font-display font-semibold"
+                  style={{ background: "hsl(var(--accent))", color: "hsl(var(--accent-foreground))" }}
+                >
+                  100%
                 </div>
-              ))}
+                <div>
+                  <div className="font-body font-semibold text-sm">Личное исследование</div>
+                  <div className="font-body text-sm text-muted-foreground mt-0.5">Всё протестировано автором проекта</div>
+                </div>
+              </div>
 
-              <div className="mt-8 p-6 border border-border rounded-sm bg-muted/30">
-                <blockquote className="font-display text-xl italic leading-relaxed text-muted-foreground mb-4">
-                  «Хорошее решение — это не самое дорогое и не самое дешёвое.
-                  Это то, которое подходит именно вам.»
-                </blockquote>
-                <div className="font-body text-xs text-muted-foreground uppercase tracking-wider">
-                  — Команда проекта
+              <div className="p-6 border border-border rounded-sm bg-background flex items-center gap-5">
+                <div
+                  className="w-14 h-14 rounded-sm flex items-center justify-center shrink-0"
+                  style={{ background: "hsl(var(--accent) / 0.1)" }}
+                >
+                  <Icon name="Microscope" size={24} style={{ color: "hsl(var(--accent))" }} />
+                </div>
+                <div>
+                  <div className="font-body font-semibold text-sm">Реальные примеры</div>
+                  <div className="font-body text-sm text-muted-foreground mt-0.5">Только живые фото, без постановки</div>
+                </div>
+              </div>
+
+              <div className="p-6 border border-border rounded-sm bg-background flex items-center gap-5">
+                <div
+                  className="w-14 h-14 rounded-sm flex items-center justify-center shrink-0"
+                  style={{ background: "hsl(var(--accent) / 0.1)" }}
+                >
+                  <Icon name="MessageCircle" size={24} style={{ color: "hsl(var(--accent))" }} />
+                </div>
+                <div>
+                  <div className="font-body font-semibold text-sm">Помощь при неудаче</div>
+                  <div className="font-body text-sm text-muted-foreground mt-0.5">Нейросеть не справилась? Помогу разобраться</div>
                 </div>
               </div>
             </div>
