@@ -29,26 +29,22 @@ const FEATURES = [
 ];
 
 const COMPARE_ROWS = [
-  { label: "Скорость работы", a: "Высокая", b: "Средняя", winner: "a" },
-  { label: "Цена в месяц", a: "₽990", b: "₽490", winner: "b" },
-  { label: "Поддержка 24/7", a: true, b: false, winner: "a" },
-  { label: "API доступ", a: true, b: true, winner: null },
-  { label: "Мобильное приложение", a: true, b: false, winner: "a" },
-  { label: "Пробный период", a: "14 дней", b: "7 дней", winner: "a" },
-  { label: "Интеграции", a: "150+", b: "40+", winner: "a" },
-  { label: "Хранилище", a: "100 ГБ", b: "Безлимит", winner: "b" },
+  { label: "Много фото с мелкими дефектами", a: "✓ Подходит", b: "— Избыточно", winner: "a" },
+  { label: "Уникальное, сильно повреждённое фото", a: "— Не справится", b: "✓ Подходит", winner: "b" },
+  { label: "Важна атмосфера и точность", a: "— Не подходит", b: "✓ Подходит", winner: "b" },
+  { label: "Ограничен бюджет", a: "✓ Подходит", b: "— Дорого", winner: "a" },
 ];
 
 const TRIAL_STEPS_A = [
-  { step: "01", text: "Введите задачу в поле ниже" },
-  { step: "02", text: "Нажмите «Запустить анализ»" },
-  { step: "03", text: "Получите результат мгновенно" },
+  { step: "01", text: "Опишите ситуацию с фото" },
+  { step: "02", text: "Нажмите «Запустить»" },
+  { step: "03", text: "Нейросеть даст мгновенный ответ" },
 ];
 
 const TRIAL_STEPS_B = [
-  { step: "01", text: "Загрузите файл или введите текст" },
-  { step: "02", text: "Выберите режим обработки" },
-  { step: "03", text: "Скачайте готовый результат" },
+  { step: "01", text: "Опишите задачу реставратору" },
+  { step: "02", text: "Нажмите «Запустить»" },
+  { step: "03", text: "Получите экспертную рекомендацию" },
 ];
 
 export default function Index() {
@@ -93,8 +89,8 @@ export default function Index() {
       setIsRunning(false);
       setTrialResult(
         trialMode === "a"
-          ? `Опция А обработала запрос за 1.2 сек. Найдено 12 совпадений, точность — 94%.`
-          : `Опция Б обработала запрос за 2.8 сек. Найдено 9 совпадений, точность — 87%.`
+          ? `Нейросеть: для вашей ситуации подходит автоматическая обработка. Быстро, дёшево, эффективно при серийных дефектах.`
+          : `Человек-реставратор: ваша задача требует ручного подхода. Мастер сохранит атмосферу и детали оригинала.`
       );
     }, 1800);
   };
@@ -267,8 +263,8 @@ export default function Index() {
 
           <div className="grid grid-cols-2 gap-4 mb-8">
             {[
-              { label: "Опция А", score: scoreA, isWinner: scoreA > scoreB },
-              { label: "Опция Б", score: scoreB, isWinner: scoreB > scoreA },
+              { label: "Нейросеть", score: scoreA, isWinner: scoreA > scoreB },
+              { label: "Человек", score: scoreB, isWinner: scoreB > scoreA },
             ].map(({ label, score, isWinner }) => (
               <div
                 key={label}
@@ -335,10 +331,10 @@ export default function Index() {
                 Параметр
               </div>
               <div className="p-4 font-body text-xs font-semibold uppercase tracking-widest border-l border-white/20">
-                Опция А
+                Нейросеть
               </div>
               <div className="p-4 font-body text-xs font-semibold uppercase tracking-widest border-l border-white/20">
-                Опция Б
+                Человек
               </div>
             </div>
 
@@ -418,7 +414,7 @@ export default function Index() {
                       : "border border-border hover:border-foreground text-muted-foreground hover:text-foreground"
                   }`}
                 >
-                  Опция {mode === "a" ? "А" : "Б"}
+                  {mode === "a" ? "Нейросеть" : "Человек"}
                 </button>
               ))}
             </div>
@@ -452,8 +448,8 @@ export default function Index() {
                 onKeyDown={(e) => e.key === "Enter" && runTrial()}
                 placeholder={
                   trialMode === "a"
-                    ? "Введите запрос для Опции А..."
-                    : "Введите текст для Опции Б..."
+                    ? "Опишите ситуацию с вашим фото..."
+                    : "Опишите задачу для реставратора..."
                 }
                 className="flex-1 px-4 py-3.5 border border-border rounded-sm font-body text-sm bg-background focus:outline-none focus:border-foreground transition-colors"
               />
