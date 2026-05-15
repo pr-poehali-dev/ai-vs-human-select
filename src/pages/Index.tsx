@@ -10,7 +10,7 @@ const NAV_ITEMS: { id: Section; label: string }[] = [
   { id: "contact", label: "Контакты" },
 ];
 
-const FEATURES = [
+const FEATURES: { icon: string; title: string; desc: string }[] = [
   {
     icon: "GitCompare",
     title: "Наглядные таблицы",
@@ -28,20 +28,24 @@ const FEATURES = [
   },
 ];
 
-const COMPARE_ROWS = [
+type CompareRow = { label: string; a: string | boolean; b: string | boolean; winner: "a" | "b" | null };
+
+const COMPARE_ROWS: CompareRow[] = [
   { label: "Много фото с мелкими дефектами", a: "✓ Подходит", b: "— Избыточно", winner: "a" },
   { label: "Уникальное, сильно повреждённое фото", a: "— Не справится", b: "✓ Подходит", winner: "b" },
   { label: "Важна атмосфера и точность", a: "— Не подходит", b: "✓ Подходит", winner: "b" },
   { label: "Ограничен бюджет", a: "✓ Подходит", b: "— Дорого", winner: "a" },
 ];
 
-const TRIAL_STEPS_A = [
+type TrialStep = { step: string; text: string };
+
+const TRIAL_STEPS_A: TrialStep[] = [
   { step: "01", text: "Опишите ситуацию с фото" },
   { step: "02", text: "Нажмите «Запустить»" },
   { step: "03", text: "Нейросеть даст мгновенный ответ" },
 ];
 
-const TRIAL_STEPS_B = [
+const TRIAL_STEPS_B: TrialStep[] = [
   { step: "01", text: "Опишите задачу реставратору" },
   { step: "02", text: "Нажмите «Запустить»" },
   { step: "03", text: "Получите экспертную рекомендацию" },
