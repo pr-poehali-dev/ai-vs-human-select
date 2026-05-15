@@ -1,14 +1,17 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Icon from "@/components/ui/icon";
 
-type Section = "home" | "compare" | "about" | "contact";
+type Section = "home" | "compare" | "colorize" | "about" | "contact";
 
 const NAV_ITEMS: { id: Section; label: string }[] = [
   { id: "home", label: "Главная" },
   { id: "compare", label: "Сравнение" },
+  { id: "colorize", label: "Колоризация" },
   { id: "about", label: "О проекте" },
   { id: "contact", label: "Контакты" },
 ];
+
+const COLORIZE_URL = "https://functions.poehali.dev/4397414d-7592-4642-b401-bd578f55017c";
 
 const FEATURES: { icon: string; title: string; desc: string }[] = [
   {
@@ -60,6 +63,13 @@ export default function Index() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [highlightWinners, setHighlightWinners] = useState(true);
 
+  // Colorize state
+  const [colorizeFile, setColorizeFile] = useState<File | null>(null);
+  const [colorizePreview, setColorizePreview] = useState<string | null>(null);
+  const [colorizeResult, setColorizeResult] = useState<string | null>(null);
+  const [colorizeLoading, setColorizeLoading] = useState(false);
+  const [colorizeError, setColorizeError] = useState<string | null>(null);
+
   const scrollToSection = (id: Section) => {
     setActiveSection(id);
     setMobileMenuOpen(false);
@@ -101,6 +111,46 @@ export default function Index() {
 
   const scoreA = COMPARE_ROWS.filter((r) => r.winner === "a").length;
   const scoreB = COMPARE_ROWS.filter((r) => r.winner === "b").length;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setColorizeFile(file);
+    setColorizeResult(null);
+    setColorizeError(null);
+    const reader = new FileReader();
+    reader.onload = (ev) => setColorizePreview(ev.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleColorize = async () => {
+    if (!colorizeFile) return;
+    setColorizeLoading(true);
+    setColorizeResult(null);
+    setColorizeError(null);
+    const reader = new FileReader();
+    reader.onload = async (ev) => {
+      const base64 = ev.target?.result as string;
+      try {
+        const res = await fetch(COLORIZE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ image: base64 }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          setColorizeResult(data.url);
+        } else {
+          setColorizeError(data.error || "Ошибка обработки");
+        }
+      } catch {
+        setColorizeError("Не удалось подключиться к серверу");
+      } finally {
+        setColorizeLoading(false);
+      }
+    };
+    reader.readAsDataURL(colorizeFile);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -496,6 +546,149 @@ export default function Index() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      </section>
+
+      {/* COLORIZE */}
+      <section id="colorize" className="py-24 border-t border-border">
+        <div className="max-w-6xl mx-auto px-6">
+          <div className="mb-12">
+            <span className="font-body text-xs uppercase tracking-widest text-muted-foreground">
+              Нейросеть
+            </span>
+            <h2 className="font-display text-5xl md:text-6xl font-semibold mt-3 mb-4">
+              Колоризация фото
+            </h2>
+            <p className="font-body text-muted-foreground max-w-xl">
+              Загрузи чёрно-белое фото — нейросеть добавит цвет автоматически. Бесплатно и без регистрации.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Upload */}
+            <div>
+              <label
+                htmlFor="file-upload"
+                className="flex flex-col items-center justify-center w-full h-64 border-2 border-dashed border-border rounded-sm cursor-pointer hover:border-foreground transition-colors bg-muted/20 hover:bg-muted/40"
+              >
+                {colorizePreview ? (
+                  <img
+                    src={colorizePreview}
+                    alt="Исходное фото"
+                    className="h-full w-full object-contain p-2"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-muted-foreground">
+                    <Icon name="Upload" size={32} />
+                    <span className="font-body text-sm">Нажмите или перетащите фото сюда</span>
+                    <span className="font-body text-xs">JPG, PNG до 10 МБ</span>
+                  </div>
+                )}
+              </label>
+              <input
+                id="file-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+
+              {colorizeFile && (
+                <div className="mt-4 flex items-center justify-between p-3 border border-border rounded-sm bg-background">
+                  <div className="flex items-center gap-2 font-body text-sm truncate">
+                    <Icon name="Image" size={16} className="text-muted-foreground shrink-0" />
+                    <span className="truncate">{colorizeFile.name}</span>
+                  </div>
+                  <button
+                    onClick={() => { setColorizeFile(null); setColorizePreview(null); setColorizeResult(null); }}
+                    className="text-muted-foreground hover:text-foreground ml-2 shrink-0"
+                  >
+                    <Icon name="X" size={16} />
+                  </button>
+                </div>
+              )}
+
+              <button
+                onClick={handleColorize}
+                disabled={!colorizeFile || colorizeLoading}
+                className="mt-4 w-full py-4 rounded-sm font-body text-sm font-semibold transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:opacity-90 flex items-center justify-center gap-2"
+                style={{
+                  background: "hsl(var(--accent))",
+                  color: "hsl(var(--accent-foreground))",
+                }}
+              >
+                {colorizeLoading ? (
+                  <>
+                    <Icon name="Loader2" size={16} className="animate-spin" />
+                    Раскрашиваем...
+                  </>
+                ) : (
+                  <>
+                    <Icon name="Wand2" size={16} />
+                    Раскрасить фото
+                  </>
+                )}
+              </button>
+
+              {colorizeError && (
+                <div className="mt-3 p-4 border border-destructive/40 rounded-sm bg-destructive/5 font-body text-sm text-destructive">
+                  {colorizeError}
+                </div>
+              )}
+            </div>
+
+            {/* Result */}
+            <div className="flex flex-col">
+              <div
+                className="flex-1 flex items-center justify-center h-64 border border-border rounded-sm bg-muted/10 overflow-hidden"
+              >
+                {colorizeResult ? (
+                  <img
+                    src={colorizeResult}
+                    alt="Раскрашенное фото"
+                    className="h-full w-full object-contain"
+                  />
+                ) : (
+                  <div className="flex flex-col items-center gap-3 text-muted-foreground">
+                    <Icon name="ImageOff" size={32} />
+                    <span className="font-body text-sm">Результат появится здесь</span>
+                  </div>
+                )}
+              </div>
+
+              {colorizeResult && (
+                <a
+                  href={colorizeResult}
+                  download="colorized.jpg"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 w-full py-3.5 rounded-sm font-body text-sm font-semibold border border-border hover:border-foreground transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <Icon name="Download" size={16} />
+                  Скачать результат
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* How it works */}
+          <div className="mt-12 grid grid-cols-3 gap-4">
+            {[
+              { step: "01", icon: "Upload", text: "Загрузите чёрно-белое фото" },
+              { step: "02", icon: "Cpu", text: "Нейросеть анализирует и добавляет цвет" },
+              { step: "03", icon: "Download", text: "Скачайте готовый результат" },
+            ].map(({ step, icon, text }) => (
+              <div key={step} className="p-5 border border-border rounded-sm bg-background flex items-start gap-3">
+                <span className="font-display text-2xl font-semibold leading-none mt-0.5 shrink-0" style={{ color: "hsl(var(--accent))" }}>
+                  {step}
+                </span>
+                <div>
+                  <Icon name={icon} size={16} className="text-muted-foreground mb-1" />
+                  <p className="font-body text-sm text-muted-foreground">{text}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
