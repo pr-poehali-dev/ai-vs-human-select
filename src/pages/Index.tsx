@@ -181,8 +181,7 @@ export default function Index() {
             </h1>
 
             <p className="animate-fade-in delay-200 font-body text-lg text-muted-foreground max-w-xl leading-relaxed mb-12">
-              Сравниваем инструменты и сервисы честно — с таблицами, живыми
-              тестами и реальными данными. Без рекламы и аффилированных ссылок.
+              Проект создан по индивидуальному проекту.
             </p>
 
             <div className="animate-fade-in delay-300 flex flex-wrap gap-4">
